@@ -1,0 +1,10 @@
+{
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
+        "start": "live-server --open=dist"
+    },
+    "devDependencies": {
+        "@types/bootstrap": "^5.2.10"
+    }
+}
