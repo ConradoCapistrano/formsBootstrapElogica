@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Form elements
+
+//#region Inicializacao e selecao de elementos
     const form = document.getElementById('transactionForm') as HTMLFormElement;
     const productNameInput = document.getElementById('productName') as HTMLInputElement;
     const quantityInput = document.getElementById('quantity') as HTMLInputElement;
@@ -7,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const transactionTypeSelect = document.getElementById('transactionType') as HTMLSelectElement;
     const limparBtn = document.getElementById('limparBtn') as HTMLButtonElement;
 
-    // Modal elements
     const actionModal = new bootstrap.Modal(document.getElementById('actionModal') as HTMLElement);
     const modalIcon = document.getElementById('modalIcon') as HTMLImageElement;
     const modalTitle = document.getElementById('actionModalLabel') as HTMLElement;
@@ -17,20 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalCancelBtn = document.getElementById('modalCancelBtn') as HTMLButtonElement;
     const modalConfirmBtn = document.getElementById('modalConfirmBtn') as HTMLButtonElement;
 
-    // Statement elements
     const extratoBody = document.getElementById('extratoBody') as HTMLElement;
     const balanceElement = document.getElementById('balance') as HTMLElement;
     const totalValueElement = document.getElementById('totalValue') as HTMLElement;
 
-    // Navigation buttons
     const viewExtratoBtn = document.getElementById('viewExtratoBtn') as HTMLButtonElement;
     const newTransactionBtn = document.getElementById('newTransactionBtn') as HTMLButtonElement;
 
-    // Sections
     const section1 = document.getElementById('section1') as HTMLElement;
     const section2 = document.getElementById('section2') as HTMLElement;
-
-    // Local storage data
+//#endregion Selecao de elementos
+//#region Dados Localstorage
     let transactions: Array<{
         id: number;
         type: string;
@@ -43,7 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let balance: number = parseFloat(localStorage.getItem('balance') || '0');
     let currentAction: string | null = null;
     let transactionToDelete: any = null;
-
+//#endregion Dados LocalStorage
+//#region inicializar : atualizar extrato / renderizar transacoes / config layout responsivo
     initApp();
 
     function initApp(): void {
@@ -57,7 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
             section2.classList.add('d-none');
         }
     }
-
+//#endregion inicializar
+//#region validacao de formularios : formatar valores / Add erros
     productNameInput.addEventListener('input', () => {
         productNameInput.value = productNameInput.value.trim();
         productNameInput.classList.toggle('is-invalid', productNameInput.value.length > 35);
@@ -94,7 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
         quantityInput.classList.remove('is-invalid');
         valueInput.classList.remove('is-invalid');
     });
-
+//#endregion validacao formularios
+//#region submissao do forms : valida dado / exibe modal de confirmacao
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -178,7 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
         section1.classList.remove('d-none');
         section1.classList.add('vh-100');
     });
-
+    //#endregion
+//#region Renderizacao do extrato : limpa tabela / add event / formata valores
     function renderTransactions(): void {
         extratoBody.innerHTML = '';
         transactions.forEach(transaction => {
@@ -274,16 +275,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         updateBalance();
     }
-
+    function formatCurrencyValue(value: number): string {
+        return value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    }
+    //#endregion
+//#region persistencia de dados
     function saveToLocalStorage(): void {
         localStorage.setItem('transactions', JSON.stringify(transactions));
         localStorage.setItem('balance', balance.toString());
     }
-
-    function formatCurrencyValue(value: number): string {
-        return value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-
+//#endregion
+//#region responsividade
     window.addEventListener('resize', () => {
         if (window.innerWidth >= 992) {
             section1.classList.remove('d-none', 'vh-100');
@@ -301,4 +303,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         updateExtrato();
     });
+//#endregion
 });
