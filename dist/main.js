@@ -29,9 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Local storage data
     let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
     let balance = parseFloat(localStorage.getItem('balance') || '0');
-    let currentAction = null; // 'add' or 'delete'
+    let currentAction = null;
     let transactionToDelete = null;
-    // Initialize app
     initApp();
     function initApp() {
         updateExtrato();
@@ -39,13 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
         if (transactions.length > 0) {
             renderTransactions();
         }
-        // Ensure initial mobile view
         if (window.innerWidth < 992) {
             section1.classList.remove('d-none');
             section2.classList.add('d-none');
         }
     }
-    // Input validations
     productNameInput.addEventListener('input', () => {
         productNameInput.value = productNameInput.value.trim();
         productNameInput.classList.toggle('is-invalid', productNameInput.value.length > 35);
@@ -80,16 +77,13 @@ document.addEventListener("DOMContentLoaded", () => {
         quantityInput.classList.remove('is-invalid');
         valueInput.classList.remove('is-invalid');
     });
-    // Form submission
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const productName = productNameInput.value.trim();
         const quantity = parseInt(quantityInput.value);
         const value = parseCurrency(valueInput.value);
-        // Validate form
         if (!validateForm(productName, quantity, value))
             return;
-        // Setup modal for confirmation
         currentAction = 'add';
         modalIcon.src = './assets/positivo.svg';
         modalTitle.textContent = 'Confirma a adição do produto?';
@@ -115,7 +109,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         return isValid;
     }
-    // Modal actions
     modalCancelBtn.addEventListener('click', () => {
         if (currentAction === 'add') {
             form.reset();
@@ -149,7 +142,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateExtrato();
         actionModal.hide();
     });
-    // Navigation for mobile
     viewExtratoBtn.addEventListener('click', (e) => {
         e.preventDefault();
         section1.classList.add('d-none');
@@ -162,7 +154,6 @@ document.addEventListener("DOMContentLoaded", () => {
         section1.classList.remove('d-none');
         section1.classList.add('vh-100');
     });
-    // Render transactions
     function renderTransactions() {
         extratoBody.innerHTML = '';
         transactions.forEach(transaction => {
@@ -180,10 +171,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     </button>
                 </td>
             `;
-            row.dataset.id = transaction.id.toString(); // Adiciona o ID da transação à linha
+            row.dataset.id = transaction.id.toString();
             extratoBody.appendChild(row);
         });
-        // Evento para botões de exclusão (visíveis em telas maiores)
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const target = e.currentTarget;
@@ -201,11 +191,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
         });
-        // Evento para clique na linha em mobile
         if (window.innerWidth < 992) {
             document.querySelectorAll('#extratoBody tr').forEach(row => {
                 row.addEventListener('click', (e) => {
-                    // Evita disparar o evento se o clique for no botão de exclusão
                     if (e.target.closest('.delete-btn'))
                         return;
                     const id = parseInt(row.dataset.id || '0');
@@ -267,7 +255,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function formatCurrencyValue(value) {
         return value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
-    // Handle window resize to maintain layout
     window.addEventListener('resize', () => {
         if (window.innerWidth >= 992) {
             section1.classList.remove('d-none', 'vh-100');
@@ -285,6 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 section1.classList.add('d-none');
             }
         }
-        updateExtrato(); // Re-renderiza para aplicar eventos corretos ao redimensionar
+        updateExtrato();
     });
 });
