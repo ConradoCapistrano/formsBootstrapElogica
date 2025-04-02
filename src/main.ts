@@ -39,12 +39,11 @@ document.addEventListener("DOMContentLoaded", () => {
         value: number;
         date: string;
     }> = JSON.parse(localStorage.getItem('transactions') || '[]');
-    
+
     let balance: number = parseFloat(localStorage.getItem('balance') || '0');
-    let currentAction: string | null = null; // 'add' or 'delete'
+    let currentAction: string | null = null;
     let transactionToDelete: any = null;
 
-    // Initialize app
     initApp();
 
     function initApp(): void {
@@ -53,14 +52,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (transactions.length > 0) {
             renderTransactions();
         }
-        // Ensure initial mobile view
         if (window.innerWidth < 992) {
             section1.classList.remove('d-none');
             section2.classList.add('d-none');
         }
     }
 
-    // Input validations
     productNameInput.addEventListener('input', () => {
         productNameInput.value = productNameInput.value.trim();
         productNameInput.classList.toggle('is-invalid', productNameInput.value.length > 35);
@@ -98,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
         valueInput.classList.remove('is-invalid');
     });
 
-    // Form submission
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -106,10 +102,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const quantity = parseInt(quantityInput.value);
         const value = parseCurrency(valueInput.value);
 
-        // Validate form
         if (!validateForm(productName, quantity, value)) return;
 
-        // Setup modal for confirmation
         currentAction = 'add';
         modalIcon.src = './assets/positivo.svg';
         modalTitle.textContent = 'Confirma a adição do produto?';
@@ -137,7 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return isValid;
     }
 
-    // Modal actions
     modalCancelBtn.addEventListener('click', () => {
         if (currentAction === 'add') {
             form.reset();
@@ -172,7 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
         actionModal.hide();
     });
 
-    // Navigation for mobile
     viewExtratoBtn.addEventListener('click', (e) => {
         e.preventDefault();
         section1.classList.add('d-none');
@@ -187,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
         section1.classList.add('vh-100');
     });
 
-    // Render transactions
     function renderTransactions(): void {
         extratoBody.innerHTML = '';
         transactions.forEach(transaction => {
@@ -205,11 +196,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     </button>
                 </td>
             `;
-            row.dataset.id = transaction.id.toString(); // Adiciona o ID da transação à linha
+            row.dataset.id = transaction.id.toString();
             extratoBody.appendChild(row);
         });
 
-        // Evento para botões de exclusão (visíveis em telas maiores)
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const target = e.currentTarget as HTMLElement;
@@ -228,11 +218,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Evento para clique na linha em mobile
         if (window.innerWidth < 992) {
             document.querySelectorAll('#extratoBody tr').forEach(row => {
                 row.addEventListener('click', (e) => {
-                    // Evita disparar o evento se o clique for no botão de exclusão
                     if ((e.target as HTMLElement).closest('.delete-btn')) return;
 
                     const id = parseInt((row as HTMLElement).dataset.id || '0');
@@ -296,7 +284,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return value.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
 
-    // Handle window resize to maintain layout
     window.addEventListener('resize', () => {
         if (window.innerWidth >= 992) {
             section1.classList.remove('d-none', 'vh-100');
@@ -312,6 +299,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 section1.classList.add('d-none');
             }
         }
-        updateExtrato(); // Re-renderiza para aplicar eventos corretos ao redimensionar
+        updateExtrato();
     });
 });
